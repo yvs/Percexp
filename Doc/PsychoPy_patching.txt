@@ -1,0 +1,25 @@
+PsychoPy patches:
+
+1) gui.py:
+Change 1. Dlg.addField(), Line 78: 
+        inputBox = wx.TextCtrl(self,-1,unicode(initial),size=(5*len(unicode(initial))+16,25)) 
+change to 
+        if type(initial)==bool: 
+            inputBox = wx.CheckBox(self, -1) 
+            inputBox.SetValue(initial) 
+        else: 
+            inputBox = wx.TextCtrl(self,-1,unicode(initial),size=(5*len(unicode(initial))+16,25)) 
+
+Change 2. Dlg.show(), Line 127:                  elif thisType in [str,unicodel]:#a num array or string?  becomes                  elif thisType in [str,unicode,bool]:#a num array, bool or string?
+ 
+Change 3. Remove the whole subsequent elif block:                  elif thisType==bool:                      if thisVal in ['True','true']:                          self.data.append(True)                      elif thisVal in ['False','false']:                          self.data.append(False)                      else:                          raise TypeError("%s should be 'True' or 'False' but '%s' was entered" %(thisName, thisVal))
+
+2) visual.py. Window._setupPyglet(), Line 836
+        config = GL.Config(depth_size=8, double_buffer=True)
+change to        config = GL.Config(depth_size=8, stencil_size=8, double_buffer=True)
+
+3) visual.py. ElementArrayStim.draw(), Line 3377
+
+before        
+              GL.glPopClientAttrib()add line
+              GL.glUseProgram(0)

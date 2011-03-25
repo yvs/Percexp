@@ -1,0 +1,98 @@
+#
+# DotLattice Experiment data
+# 
+
+# There are four types of sections: SESSION, FIXED, VARYING and BLOCK
+# Each section should start with the opening tag <NAME> and be concluded
+# with the closing tag </NAME>
+  
+# 1. SESSION section holds the general session data
+
+<SESSION>
+paid no                 # whether the subject is paid
+workingDirectory /Users/Shared
+
+practiceTrials 5
+demoTrials 5
+sessionTrials auto      # if auto, the pram gets calculated as the length of the longest block sequence (see BLOCK section)
+
+maskingRadius 100       # how far dots can jump during masking (in pixels)
+
+fixationDuration 0.3    # all durations are specified in seconds
+maskingDuration 0.21
+practiceStimulusDuration 0.5
+trialStimulusDuration 0.3
+demoStimulusDuration 0.5
+intertrialDuration 0.58
+
+responseChoiceDiameter 160    # size of a single response option
+responseChoicesDistance (200,200)   # (horiz, vert) distance between response options
+
+windowBgnd -1       # all luminance values (from black to white) are given in range [-1,1] 
+responseBgnd -1
+apertureBgnd -0.75
+
+apertureSize 600
+showAperture True
+</SESSION>
+
+
+# 2. FIXED section specifies the dot lattice data that do not change during the session
+#    Note. Anything in the FIXED section will be overridden if also present in VARYING or BLOCK sections
+
+<FIXED>
+aDistance 80
+dotSize 20
+dotLum1 1
+#dotLum2 0.0
+dotAlternation no
+#gamma 80
+#theta 10
+</FIXED>
+
+
+# 3. VARYING section lets specify a generative procedure for the named parameter.
+#    Generated data undergo necessary (re)permutations during the session run and will be supplied 
+#    to the lattice for as long as needed.
+#    Attributes for generation should be specified as given in the example below
+#    Parameters:
+#                parMin - minimum value for generation (inclusive)
+#                parMax - maximum value for generation (inclusive)
+#                    Note: For parameters gamma, theta, dotAngle both parMin and parMax 
+#                          are already known to the software and can be omitted.
+#                          parMin is also known for baAspect (1.0).
+#                parStep - step size to cover the range from parMin to parMax
+#                stepCount - number of steps to generate between parMin and parMax (including both)
+#                    Note: stepCount and parStep are mutually exclusive
+#                method - random or regular. If random is used then parMin, parMax and stepCount
+#                    should also be specified. 
+#                parTable - list of values to use for the parameter in the form (val1, val2, val3…)
+#                    Note: if parTable is given all other attributes are ignored
+#                shuffled - whether the generated set should undergo permutation(s). True by default.
+#    Note. Anything in the VARYING section will be overridden if also present in any of BLOCK sections
+
+<VARYING>
+theta stepCount=10 shuffled=False 
+</VARYING>
+
+# 4. BLOCK sections define sequences of multi-parametric vectors to be used throughout the session.
+#    The header has two attributes:
+#        repeats - how many times the block set should be repeated. 1 by default
+#        shuffled - if True, all instances of the block will be individually permuted and then mixed 
+#                   thus removing the block boundaries. True by default.
+#    The data within the block body has to specify first line as a semantic header.
+#    All subsequent lines specify one data vector.
+#
+#    Note. There can be as many <BLOCK>…</BLOCK> sections as needed.
+#          If the same parameter name is specified in more than one block, the last block data will prevail.
+#    If sessionTrials parameter in SESSION section is set to auto, it will be set to the longest
+#          block sequence calculated as blockseq_length * blockseq_repeats.
+
+<BLOCK repeats=2 shuffled=True>
+dotLum2 gamma baAspect aDistance dotAlternation
+-0.3 60 2 50 a
+0.2 75 1 105 b
+0.7 85 1.5 45 b
+0.5 90 2 60 a
+</BLOCK>
+
